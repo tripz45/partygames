@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Party Games</title>
+<style>
+:root{--bg:#f1edff;--ink:#17142b;--card:#fff;--blue:#3b2bff;--lime:#c8ff3d;--mut:#6b6788;--ad:#e2dcfa;--line:#cfc7f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14112a;--ink:#f1edff;--card:#201c40;--blue:#8c82ff;--lime:#c8ff3d;--mut:#a9a4cf;--ad:#1d1a38;--line:#3a3466}}
+:root[data-theme="dark"]{--bg:#14112a;--ink:#f1edff;--card:#201c40;--blue:#8c82ff;--lime:#c8ff3d;--mut:#a9a4cf;--ad:#1d1a38;--line:#3a3466}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:"Arial Black","Segoe UI",system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+header{text-align:center;padding:20px 64px 4px}
+header h1{font-size:clamp(1.8rem,5vw,2.8rem)}
+header p{margin:4px 0 0;color:var(--mut)}
+.lang{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;z-index:5;display:flex;align-items:center;gap:4px;background:var(--card);border:2px solid var(--ink);border-radius:999px;padding:4px 8px 4px 10px;box-shadow:3px 3px 0 var(--blue)}
+.lang select{border:none;background:transparent;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.lang select option{color:#17142b;background:#fff}
+.layout{padding:0 16px;max-width:680px;margin:0 auto}
+main{flex:1;min-width:0;max-width:640px;min-height:520px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px}
+.game{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:20px;text-align:left;cursor:pointer;font:inherit;color:inherit;box-shadow:6px 6px 0 var(--blue)}
+.game:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--blue)}
+.game:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.game h2{font-size:1.5rem;margin-bottom:6px}
+.game p{margin:0;color:var(--mut)}
+.panel{background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:24px;margin-top:20px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+.row label{font-weight:700}
+.stepper{display:flex;align-items:center;gap:12px}
+.stepper span{min-width:2ch;text-align:center;font-size:1.6rem;font-weight:800}
+.stepper button{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--bg);color:var(--ink);font-size:1.4rem;cursor:pointer}
+.btn{display:block;width:100%;padding:16px;border:3px solid var(--ink);border-radius:14px;background:var(--lime);color:#17142b;font:inherit;font-weight:800;font-size:1.1rem;cursor:pointer}
+.btn.alt{background:var(--card);color:var(--ink);margin-top:10px}
+.back{background:none;border:none;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;padding:0}
+.reveal{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;border-radius:14px;padding:20px;margin:14px 0;background:var(--bg)}
+.reveal .who{color:var(--mut);font-weight:700}
+.reveal .word{font-size:clamp(2rem,9vw,3rem);font-family:"Arial Black",system-ui,sans-serif;word-break:break-word}
+.reveal .word.imp{color:#e0245e}
+.hint{color:var(--mut);font-size:.9rem;margin:0}
+.hidden{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.chip{padding:8px 14px;border:2px solid var(--ink);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}.chip.on{background:var(--lime);color:#17142b}.opt{display:block;width:100%;padding:24px;margin-top:12px;border:3px solid var(--ink);border-radius:14px;background:var(--bg);color:var(--ink);font:inherit;font-weight:800;font-size:1.15rem;cursor:pointer}.opt.on{background:var(--lime);color:#17142b}
+.theme{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;z-index:5;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:var(--card);box-shadow:3px 3px 0 var(--blue);cursor:pointer;font-size:1.1rem}
+</style>
+</head>
+<body>
+<label class="lang">🌐 <select id="lang" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option></select></label>
+
+<button class="theme" id="theme" aria-label="Theme">🌓</button>
+<header>
+  <h1 data-t="title">Party Games</h1>
+  <p data-t="sub"></p>
+</header>
+
+
+<div class="layout">
+  
+  <main>
+    <section id="home">
+      <div class="games">
+        <button class="game" id="open-imposter"><h2 data-t="impT"></h2><p data-t="impD"></p></button>
+        <button class="game" id="open-charades"><h2 data-t="actT"></h2><p data-t="actD"></p></button>
+        <button class="game" id="open-wyr"><h2 data-t="wyrT"></h2><p data-t="wyrD"></p></button>
+        <button class="game" id="open-td"><h2 data-t="truT"></h2><p data-t="truD"></p></button>
+        <button class="game" id="open-dice"><h2 data-t="diceT"></h2><p data-t="diceD"></p></button>
+        <button class="game" id="open-hot"><h2 data-t="hotT"></h2><p data-t="hotD"></p></button>
+      </div>
+    </section>
+
+    <section id="setup" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="impT"></h2>
+      <div class="chips" id="cats" role="group"></div>
+      <div class="row">
+        <label data-t="players"></label>
+        <div class="stepper"><button id="p-minus" aria-label="-">&minus;</button><span id="p-val">4</span><button id="p-plus" aria-label="+">+</button></div>
+      </div>
+      <div class="row">
+        <label data-t="imps"></label>
+        <div class="stepper"><button id="i-minus" aria-label="-">&minus;</button><span id="i-val">1</span><button id="i-plus" aria-label="+">+</button></div>
+      </div>
+      <button class="btn" id="start" data-t="start"></button>
+    </section>
+
+    <section id="play" class="panel hidden">
+      <div id="turn">
+        <div class="reveal" id="card"></div>
+        <button class="btn" id="action"></button>
+      </div>
+      <div id="done" class="hidden">
+        <div class="reveal">
+          <div class="word" data-t="done"></div>
+          <p class="hint" data-t="doneH"></p>
+          <p class="word" id="starter" style="font-size:1.3rem"></p>
+        </div>
+        <button class="btn" id="again" data-t="again"></button>
+        <button class="btn alt" data-home data-t="all"></button>
+      </div>
+    </section>
+
+    <section id="charades" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="actT"></h2>
+      <div class="reveal"><div class="who" id="c-info"></div><div class="word" id="c-word"></div></div>
+      <button class="btn" id="c-start"></button>
+      <div id="c-run" class="hidden"><button class="btn" id="c-got" data-t="got"></button><button class="btn alt" id="c-skip" data-t="skip"></button></div>
+    </section>
+
+    <section id="wyr" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="wyrT"></h2>
+      <button class="opt" id="w-a"></button>
+      <button class="opt" id="w-b"></button>
+      <button class="btn alt" id="w-next" data-t="next"></button>
+    </section>
+    <section id="truth" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="truT"></h2>
+      <div class="reveal"><div class="word" id="td-out" data-t="tdH"></div></div>
+      <button class="btn" id="td-t" data-t="truth"></button>
+      <button class="btn alt" id="td-d" data-t="dare"></button>
+    </section>
+
+    <section id="dice" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="diceT"></h2>
+      <div class="reveal"><div class="word" id="d-out" data-t="dH"></div></div>
+      <button class="btn" id="d-roll" data-t="roll"></button>
+      <button class="btn alt" id="d-flip" data-t="flip"></button>
+    </section>
+
+    <section id="hot" class="panel hidden">
+      <button class="back" data-home data-t="back"></button>
+      <h2 style="margin-top:10px" data-t="hotT"></h2>
+      <div class="reveal" id="h-card"><div class="word" id="h-word"></div></div>
+      <button class="btn" id="h-btn" data-t="hotGo"></button>
+    </section>
+  </main>
+
+  </div>
+
+
+<script>
+const L={
+en:{title:"Party Games",sub:"Pick a game, pass the phone around.",impT:"Imposter",impD:"Everyone gets the same secret word except the imposters. Find them.",actT:"Act It Out",actD:"Act out a word without talking while your friends guess. Get as many right as you can in 60 seconds.",wyrT:"Would You Rather",wyrD:"Two tough choices. Pick one and defend it.",back:"← All games",players:"Players",imps:"Imposters",start:"Start game",cats:"Mixed,Everyday,Food,Animals,Places,Jobs,Sports",ready:"Ready?",pOf:"Player {n} of {m}",secret:"Make sure only you can see the screen.",show:"Show my word",hide:"Hide word",your:"Player {n}, your word is",impW:"Imposter",done:"Everyone has their word",doneH:"Talk, give hints, and vote out the imposter.",again:"Play again",all:"All games",actInfo:"Act out the word without talking. Tap Got it when your friends guess right.",round:"Start round",got:"Got it",skip:"Skip",left:"{s}s left. Score: {c}",up:"Time's up!",fin:"Final score: {c}",nr:"New round",next:"Next question",truT:"Truth or Dare",truD:"Answer honestly or take the challenge.",truth:"Truth",dare:"Dare",tdH:"Truth or dare?",diceT:"Dice & Coin",diceD:"Roll a die or flip a coin to settle it.",roll:"Roll die",flip:"Flip coin",heads:"🪙 Heads",tails:"🪙 Tails",dH:"Roll or flip!",hotT:"Hot Potato",hotD:"Pass the phone around. Whoever holds it when it explodes loses.",hotGo:"Start",hotPass:"Pass it on!",hotBoom:"BOOM!",starts:"Player {n} starts!"},
+de:{title:"Partyspiele",sub:"Wähle ein Spiel und gib das Handy herum.",impT:"Imposter",impD:"Alle bekommen dasselbe geheime Wort, nur die Imposter nicht. Findet sie.",actT:"Pantomime",actD:"Stelle ein Wort ohne zu sprechen dar, während deine Freunde raten. Schaffe in 60 Sekunden so viele wie möglich.",wyrT:"Würdest du eher",wyrD:"Zwei schwierige Entscheidungen. Wähle eine und verteidige sie.",back:"← Alle Spiele",players:"Spieler",imps:"Imposter",start:"Spiel starten",cats:"Gemischt,Alltag,Essen,Tiere,Orte,Berufe,Sport",ready:"Bereit?",pOf:"Spieler {n} von {m}",secret:"Achte darauf, dass nur du den Bildschirm sehen kannst.",show:"Mein Wort zeigen",hide:"Wort verstecken",your:"Spieler {n}, dein Wort ist",impW:"Imposter",done:"Alle kennen ihr Wort",doneH:"Redet, gebt Hinweise und wählt den Imposter aus.",again:"Nochmal spielen",all:"Alle Spiele",actInfo:"Stelle das Wort ohne zu sprechen dar. Tippe auf Erraten, wenn deine Freunde richtig liegen.",round:"Runde starten",got:"Erraten",skip:"Überspringen",left:"Noch {s}s. Punkte: {c}",up:"Zeit ist um!",fin:"Endstand: {c}",nr:"Neue Runde",next:"Nächste Frage",truT:"Wahrheit oder Pflicht",truD:"Antworte ehrlich oder stelle dich der Aufgabe.",truth:"Wahrheit",dare:"Pflicht",tdH:"Wahrheit oder Pflicht?",diceT:"Würfel & Münze",diceD:"Würfle oder wirf eine Münze, um zu entscheiden.",roll:"Würfeln",flip:"Münze werfen",heads:"🪙 Kopf",tails:"🪙 Zahl",dH:"Würfeln oder werfen!",hotT:"Heiße Kartoffel",hotD:"Gebt das Handy herum. Wer es hält, wenn es explodiert, verliert.",hotGo:"Start",hotPass:"Weitergeben!",hotBoom:"BUMM!",starts:"Spieler {n} fängt an!"},
+fr:{title:"Jeux de soirée",sub:"Choisissez un jeu et faites tourner le téléphone.",impT:"Imposteur",impD:"Tout le monde reçoit le même mot secret, sauf les imposteurs. Trouvez-les.",actT:"Mime",actD:"Faites deviner un mot sans parler pendant que vos amis cherchent. Trouvez-en le plus possible en 60 secondes.",wyrT:"Tu préfères",wyrD:"Deux choix difficiles. Choisissez-en un et défendez-le.",back:"← Tous les jeux",players:"Joueurs",imps:"Imposteurs",start:"Lancer la partie",cats:"Mélange,Quotidien,Nourriture,Animaux,Lieux,Métiers,Sports",ready:"Prêt ?",pOf:"Joueur {n} sur {m}",secret:"Assurez-vous d'être le seul à voir l'écran.",show:"Voir mon mot",hide:"Cacher le mot",your:"Joueur {n}, votre mot est",impW:"Imposteur",done:"Tout le monde a son mot",doneH:"Discutez, donnez des indices et éliminez l'imposteur.",again:"Rejouer",all:"Tous les jeux",actInfo:"Faites deviner le mot sans parler. Appuyez sur Trouvé quand vos amis ont bon.",round:"Lancer la manche",got:"Trouvé",skip:"Passer",left:"Encore {s}s. Score : {c}",up:"Temps écoulé !",fin:"Score final : {c}",nr:"Nouvelle manche",next:"Question suivante",truT:"Action ou Vérité",truD:"Réponds honnêtement ou relève le défi.",truth:"Vérité",dare:"Action",tdH:"Action ou vérité ?",diceT:"Dé & Pièce",diceD:"Lance un dé ou une pièce pour trancher.",roll:"Lancer le dé",flip:"Lancer la pièce",heads:"🪙 Pile",tails:"🪙 Face",dH:"Lancez !",hotT:"Patate chaude",hotD:"Faites tourner le téléphone. Celui qui le tient quand il explose perd.",hotGo:"Démarrer",hotPass:"Passez-le !",hotBoom:"BOUM !",starts:"Le joueur {n} commence !"}
+};
+const W={
+en:["Pizza,Beach,Guitar,Elephant,Library,Coffee,Bicycle,Volcano,Castle,Rainbow,Doctor,Football,Snowman,Airport,Chocolate,Pirate,Umbrella,Camera,Dragon,Hospital,Banana,Mountain,Robot,Circus,Pyramid,Spider,Lighthouse,Sandwich,Detective,Submarine,Piano,Jungle,Wizard,Skateboard,Museum,Tornado,Popcorn,Astronaut,Bakery,Penguin","Sushi,Pancakes,Burger,Spaghetti,Ice cream,Tacos,Croissant,Salad,Soup,Cheese,Pretzel,Waffle,Curry,Donut","Giraffe,Dolphin,Kangaroo,Owl,Octopus,Fox,Turtle,Lion,Shark,Parrot,Bat,Camel,Hedgehog,Zebra","Paris,Desert,School,Zoo,Cinema,Farm,Island,Supermarket,Gym,Cave,Stadium,Playground,Train station,Forest","Firefighter,Teacher,Chef,Pilot,Farmer,Dentist,Plumber,Singer,Judge,Barber,Mechanic,Lifeguard,Painter,Postman","Tennis,Swimming,Boxing,Golf,Basketball,Surfing,Archery,Volleyball,Rugby,Skiing,Fencing,Cycling,Karate,Bowling"],
+de:["Pizza,Strand,Gitarre,Elefant,Bibliothek,Kaffee,Fahrrad,Vulkan,Burg,Regenbogen,Arzt,Fußball,Schneemann,Flughafen,Schokolade,Pirat,Regenschirm,Kamera,Drache,Krankenhaus,Banane,Berg,Roboter,Zirkus,Pyramide,Spinne,Leuchtturm,Sandwich,Detektiv,U-Boot,Klavier,Dschungel,Zauberer,Skateboard,Museum,Tornado,Popcorn,Astronaut,Bäckerei,Pinguin","Sushi,Pfannkuchen,Burger,Spaghetti,Eis,Tacos,Croissant,Salat,Suppe,Käse,Brezel,Waffel,Curry,Donut","Giraffe,Delfin,Känguru,Eule,Tintenfisch,Fuchs,Schildkröte,Löwe,Hai,Papagei,Fledermaus,Kamel,Igel,Zebra","Paris,Wüste,Schule,Zoo,Kino,Bauernhof,Insel,Supermarkt,Fitnessstudio,Höhle,Stadion,Spielplatz,Bahnhof,Wald","Feuerwehrmann,Lehrer,Koch,Pilot,Bauer,Zahnarzt,Klempner,Sänger,Richter,Friseur,Mechaniker,Rettungsschwimmer,Maler,Briefträger","Tennis,Schwimmen,Boxen,Golf,Basketball,Surfen,Bogenschießen,Volleyball,Rugby,Skifahren,Fechten,Radfahren,Karate,Bowling"],
+fr:["Pizza,Plage,Guitare,Éléphant,Bibliothèque,Café,Vélo,Volcan,Château,Arc-en-ciel,Médecin,Football,Bonhomme de neige,Aéroport,Chocolat,Pirate,Parapluie,Appareil photo,Dragon,Hôpital,Banane,Montagne,Robot,Cirque,Pyramide,Araignée,Phare,Sandwich,Détective,Sous-marin,Piano,Jungle,Sorcier,Skateboard,Musée,Tornade,Pop-corn,Astronaute,Boulangerie,Pingouin","Sushi,Crêpes,Hamburger,Spaghetti,Glace,Tacos,Croissant,Salade,Soupe,Fromage,Bretzel,Gaufre,Curry,Beignet","Girafe,Dauphin,Kangourou,Hibou,Pieuvre,Renard,Tortue,Lion,Requin,Perroquet,Chauve-souris,Chameau,Hérisson,Zèbre","Paris,Désert,École,Zoo,Cinéma,Ferme,Île,Supermarché,Salle de sport,Grotte,Stade,Aire de jeux,Gare,Forêt","Pompier,Professeur,Cuisinier,Pilote,Agriculteur,Dentiste,Plombier,Chanteur,Juge,Coiffeur,Mécanicien,Maître-nageur,Peintre,Facteur","Tennis,Natation,Boxe,Golf,Basket,Surf,Tir à l'arc,Volley,Rugby,Ski,Escrime,Cyclisme,Karaté,Bowling"]
+};
+const Q={
+en:"Be able to fly|Be invisible;Never use a phone again|Never watch TV again;Always be 10 minutes late|Always be 30 minutes early;Have no eyebrows|Have no eyelashes;Only eat pizza forever|Never eat pizza again;Live in a treehouse|Live on a boat;Talk to animals|Speak every language;Be famous|Be rich and unknown;Lose your phone for a month|Lose your shoes for a month;Fight one horse-sized duck|Fight 100 duck-sized horses;Have a rewind button|Have a pause button;Always have to whisper|Always have to shout;Live without music|Live without movies;Be the funniest person|Be the smartest person;Travel to the past|Travel to the future",
+de:"Fliegen können|Unsichtbar sein;Nie wieder ein Handy benutzen|Nie wieder fernsehen;Immer 10 Minuten zu spät kommen|Immer 30 Minuten zu früh kommen;Keine Augenbrauen haben|Keine Wimpern haben;Für immer nur Pizza essen|Nie wieder Pizza essen;In einem Baumhaus wohnen|Auf einem Boot wohnen;Mit Tieren sprechen können|Jede Sprache sprechen können;Berühmt sein|Reich und unbekannt sein;Einen Monat ohne Handy leben|Einen Monat ohne Schuhe leben;Gegen eine pferdegroße Ente kämpfen|Gegen 100 entengroße Pferde kämpfen;Eine Zurückspul-Taste haben|Eine Pause-Taste haben;Immer flüstern müssen|Immer schreien müssen;Ohne Musik leben|Ohne Filme leben;Die lustigste Person sein|Die klügste Person sein;In die Vergangenheit reisen|In die Zukunft reisen",
+fr:"Pouvoir voler|Être invisible;Ne plus jamais utiliser de téléphone|Ne plus jamais regarder la télé;Toujours arriver 10 minutes en retard|Toujours arriver 30 minutes en avance;Ne pas avoir de sourcils|Ne pas avoir de cils;Manger uniquement des pizzas à vie|Ne plus jamais manger de pizza;Vivre dans une cabane dans un arbre|Vivre sur un bateau;Parler aux animaux|Parler toutes les langues;Être célèbre|Être riche et inconnu;Perdre son téléphone pendant un mois|Perdre ses chaussures pendant un mois;Combattre un canard grand comme un cheval|Combattre 100 chevaux petits comme des canards;Avoir un bouton retour en arrière|Avoir un bouton pause;Devoir toujours chuchoter|Devoir toujours crier;Vivre sans musique|Vivre sans films;Être la personne la plus drôle|Être la personne la plus intelligente;Voyager dans le passé|Voyager dans le futur"
+};
+const TQ={
+en:["What's your most embarrassing moment?;What lie did you tell recently?;What's your guilty-pleasure song?;What's the weirdest thing you've googled?;What are you most afraid of?;Who here would you swap lives with?","Dance for 15 seconds.;Talk in an accent until your next turn.;Sing the chorus of any song.;Do 10 jumping jacks.;Speak only in questions for 2 minutes.;Imitate another player until someone guesses who."],
+de:["Was ist dein peinlichster Moment?;Welche Lüge hast du zuletzt erzählt?;Was ist dein heimliches Lieblingslied?;Was ist das Seltsamste, das du gegoogelt hast?;Wovor hast du am meisten Angst?;Mit wem hier würdest du das Leben tauschen?","Tanze 15 Sekunden lang.;Sprich mit Akzent bis zu deiner nächsten Runde.;Singe den Refrain eines Liedes.;Mache 10 Hampelmänner.;Sprich 2 Minuten nur in Fragen.;Ahme einen Mitspieler nach, bis jemand errät, wer es ist."],
+fr:["Quel est ton moment le plus gênant ?;Quel mensonge as-tu raconté récemment ?;Quelle est ta chanson honteuse préférée ?;Quelle est la chose la plus bizarre que tu aies cherchée sur Google ?;De quoi as-tu le plus peur ?;Avec qui ici échangerais-tu ta vie ?","Danse pendant 15 secondes.;Parle avec un accent jusqu'à ton prochain tour.;Chante le refrain d'une chanson.;Fais 10 jumping jacks.;Ne parle qu'en questions pendant 2 minutes.;Imite un autre joueur jusqu'à ce que quelqu'un devine qui."]};
+const AW={},FL={},QQ={},TDQ={};
+for(const l in W){AW[l]=W[l].map(s=>s.split(","));FL[l]=[].concat(...AW[l]);TDQ[l]=TQ[l].map(x=>x.split(";"));QQ[l]=Q[l].split(";").map(s=>s.split("|"))}
+const ST=[];let tot=0;AW.en.forEach(a=>{ST.push(tot);tot+=a.length});
+const $=id=>document.getElementById(id);
+const rnd=n=>Math.floor(Math.random()*n);
+let lang="en";
+try{const s=localStorage.getItem("lang");if(L[s])lang=s;else{const n=(navigator.language||"").slice(0,2);if(L[n])lang=n}}catch(e){}
+const t=(k,v)=>{let s=L[lang][k];for(const x in v)s=s.replace("{"+x+"}",v[x]);return s};
+const views=["home","setup","play","charades","wyr","truth","dice","hot"];
+function show(v){views.forEach(x=>$(x).classList.toggle("hidden",x!==v))}
+document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",()=>{clearInterval(cTimer);hStop();show("home")}));
+
+/* Imposter */
+let players=4,imps=1,roles=[],wIdx=0,idx=0,shown=false,started=false,cat=-1;
+const maxImps=()=>Math.max(1,Math.floor((players-1)/2));
+function sync(){imps=Math.min(imps,maxImps());$("p-val").textContent=players;$("i-val").textContent=imps}
+function chips(){const box=$("cats");box.innerHTML="";t("cats").split(",").forEach((n,i)=>{const b=document.createElement("button");b.className="chip"+(i-1===cat?" on":"");b.textContent=n;b.onclick=()=>{cat=i-1;chips()};box.appendChild(b)})}
+$("open-imposter").onclick=()=>{sync();show("setup")};
+$("p-minus").onclick=()=>{players=Math.max(3,players-1);sync()};
+$("p-plus").onclick=()=>{players=Math.min(20,players+1);sync()};
+$("i-minus").onclick=()=>{imps=Math.max(1,imps-1);sync()};
+$("i-plus").onclick=()=>{imps=Math.min(maxImps(),imps+1);sync()};
+$("start").onclick=()=>{
+  wIdx=cat<0?rnd(tot):ST[cat]+rnd(AW.en[cat].length);
+  roles=Array.from({length:players},(_,i)=>i<imps);
+  for(let i=roles.length-1;i>0;i--){const j=rnd(i+1);[roles[i],roles[j]]=[roles[j],roles[i]]}
+  idx=0;shown=false;started=true;show("play");$("turn").classList.remove("hidden");$("done").classList.add("hidden");render();
+};
+function render(){
+  if(!started)return;
+  const card=$("card"),btn=$("action");
+  if(!shown){
+    card.innerHTML='<div class="who">'+t("pOf",{n:idx+1,m:players})+'</div><div class="word">'+t("ready")+'</div><p class="hint">'+t("secret")+'</p>';
+    btn.textContent=t("show");
+  }else{
+    const imp=roles[idx];
+    card.innerHTML='<div class="who">'+t("your",{n:idx+1})+'</div><div class="word'+(imp?' imp':'')+'">'+(imp?t("impW"):FL[lang][wIdx])+'</div>';
+    btn.textContent=t("hide");
+  }
+}
+$("action").onclick=()=>{
+  if(!shown){shown=true;render();return}
+  shown=false;idx++;
+  if(idx>=players){$("starter").textContent="🎯 "+t("starts",{n:rnd(players)+1});buzz();$("turn").classList.add("hidden");$("done").classList.remove("hidden");return}
+  render();
+};
+$("again").onclick=()=>show("setup");
+
+/* Act It Out */
+let cScore=0,cT=0,cTimer=null,cState="idle",cIdx=0;
+function cRender(){
+  const w=$("c-word"),i=$("c-info"),s=$("c-start");
+  if(cState==="idle"){w.textContent=t("ready");i.textContent=t("actInfo");s.textContent=t("round")}
+  else if(cState==="run"){w.textContent=FL[lang][cIdx];i.textContent=t("left",{s:cT,c:cScore})}
+  else{w.textContent=t("up");i.textContent=t("fin",{c:cScore});s.textContent=t("nr")}
+}
+$("open-charades").onclick=()=>{clearInterval(cTimer);cState="idle";$("c-run").classList.add("hidden");$("c-start").classList.remove("hidden");cRender();show("charades")};
+$("c-start").onclick=()=>{
+  cScore=0;cT=60;cState="run";cIdx=rnd(tot);$("c-start").classList.add("hidden");$("c-run").classList.remove("hidden");cRender();
+  clearInterval(cTimer);
+  cTimer=setInterval(()=>{cT--;if(cT<=0){clearInterval(cTimer);cState="end";$("c-run").classList.add("hidden");$("c-start").classList.remove("hidden")}cRender()},1000);
+};
+$("c-got").onclick=()=>{cScore++;cIdx=rnd(tot);cRender()};
+$("c-skip").onclick=()=>{cIdx=rnd(tot);cRender()};
+
+/* Would You Rather */
+let wi=-1;
+function wShow(){if(wi<0)return;const q=QQ[lang][wi];$("w-a").textContent=q[0];$("w-b").textContent=q[1]}
+function wNext(){let n;do{n=rnd(QQ.en.length)}while(n===wi);wi=n;wShow();$("w-a").classList.remove("on");$("w-b").classList.remove("on")}
+$("open-wyr").onclick=()=>{wNext();show("wyr")};
+$("w-a").onclick=()=>{$("w-a").classList.add("on");$("w-b").classList.remove("on")};
+$("w-b").onclick=()=>{$("w-b").classList.add("on");$("w-a").classList.remove("on")};
+$("w-next").onclick=wNext;
+
+/* Truth or Dare */
+function buzz(p){try{navigator.vibrate&&navigator.vibrate(p||60)}catch(e){}}
+function tdGo(k){const a=TDQ[lang][k];$("td-out").textContent=a[rnd(a.length)]}
+$("open-td").onclick=()=>{$("td-out").textContent=t("tdH");show("truth")};
+$("td-t").onclick=()=>tdGo(0);$("td-d").onclick=()=>tdGo(1);
+/* Dice & Coin */
+$("open-dice").onclick=()=>{$("d-out").textContent=t("dH");show("dice")};
+$("d-roll").onclick=()=>{$("d-out").textContent="🎲 "+(rnd(6)+1);buzz()};
+$("d-flip").onclick=()=>{$("d-out").textContent=t(rnd(2)?"heads":"tails");buzz()};
+/* Hot Potato */
+let hT=null;
+function hStop(){clearTimeout(hT);const c=$("h-card");c.style.background="";c.style.color="";$("h-btn").classList.remove("hidden")}
+$("open-hot").onclick=()=>{hStop();$("h-word").textContent="🥔";show("hot")};
+$("h-btn").onclick=()=>{
+  hStop();$("h-word").textContent="🥔 "+t("hotPass");$("h-btn").classList.add("hidden");
+  hT=setTimeout(()=>{const c=$("h-card");c.style.background="#e0245e";c.style.color="#fff";$("h-word").textContent="💥 "+t("hotBoom");buzz([200,80,300]);$("h-btn").classList.remove("hidden")},8000+rnd(17000));
+};
+/* Theme */
+try{const s=localStorage.getItem("theme");if(s)document.documentElement.dataset.theme=s}catch(e){}
+$("theme").onclick=()=>{const r=document.documentElement;const d=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";try{localStorage.setItem("theme",r.dataset.theme)}catch(e){}};
+/* Language */
+function applyLang(){
+  document.documentElement.lang=lang;document.title=t("title");
+  document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));
+  $("lang").value=lang;chips();render();cRender();wShow();
+}
+$("lang").onchange=e=>{lang=e.target.value;try{localStorage.setItem("lang",lang)}catch(x){}applyLang()};
+applyLang();
+</script>
+</body>
+</html>
